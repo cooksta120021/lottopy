@@ -1,46 +1,97 @@
-# Project Title
+# LottoPy
+
+Multi-game lottery scraper and analyzer for Texas Lottery games. It pulls draw histories, counts number frequencies, and generates suggestion sets using a dynamic frequency threshold.
 
 ## Table of Contents
 
 - [About](#about)
-- [Getting Started](#getting_started)
+- [Setup](#setup)
 - [Usage](#usage)
-- [Contributing](../CONTRIBUTING.md)
+- [GUI](#gui)
+- [Outputs](#outputs)
+- [Notes](#notes)
+- [Extending](#extending)
 
-## About <a name = "about">asd</a>
+## About <a name="about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+Games supported (extensible via config):
 
-## Getting Started <a name = "getting_started">asd</a>
+- **Mega Millions** (`mega_millions`)
+- **Texas Two Step** (`texas_two_step`)
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+Workflow per game:
 
-### Prerequisites
+1. Scrape the game’s winning numbers page and save raw draws.
+2. Count how often each ball appears (main numbers and special balls).
+3. Derive a dynamic threshold from draw history and generate suggestion sets using frequently occurring numbers.
 
-What things you need to install the software and how to install them.
+## Setup <a name="setup"></a>
 
+Prerequisites:
+
+- Python 3.8+
+- Dependencies: `requests`, `beautifulsoup4`
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt  # if available
+# or install directly:
+pip install requests beautifulsoup4
 ```
-Give examples
+
+## Usage <a name="usage"></a>
+
+Run the end-to-end scrape, count, and suggestion flow:
+
+```bash
+python -m lottopy --game mega_millions
+# or
+python -m lottopy --game texas_two_step
 ```
 
-### Installing
+Options:
 
-A step by step series of examples that tell you how to get a development env running.
+- `--output-dir`: destination for outputs (default `data`)
+- `--threshold-divisor`: divisor for frequency threshold (default `31`)
+- `--suggestion-sets`: number of suggestion rows to emit (default `5`)
 
-Say what the step will be
+## GUI <a name="gui"></a>
 
-```
-Give the example
-```
+Run the simple Tkinter GUI to select a game, tweak options, and run the pipeline:
 
-And repeat
-
-```
-until finished
+```bash
+python -m lottopy.gui
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+Controls:
 
-## Usage <a name = "usage">asd</a>
+- **Game**: choose `mega_millions` or `texas_two_step`.
+- **Output dir**: where results will be saved.
+- **Threshold divisor**: adjusts frequency cutoff (`total_draws / divisor`).
+- **Suggestion sets**: number of suggestion rows to generate.
+- **Load results**: after running (or if files already exist), loads `{game}_suggestions.txt` from the output dir into the GUI for review.
 
-Add notes about how to use the system.
+## Outputs <a name="outputs"></a>
+
+Outputs live in `data/` by default:
+
+- `{game}_raw.csv`: Raw draw rows scraped from the site.
+- `{game}_counts.csv`: Frequency table (`category,value,count`) for numbers and special balls.
+- `{game}_suggestions.txt`: Up to N suggestion rows composed of frequently occurring numbers.
+
+## Notes <a name="notes"></a>
+
+- Live scrape depends on the Texas Lottery website; network availability and site layout changes may affect results.
+- Threshold scales with draw history (`total_draws / threshold_divisor`), so outputs shift as more draws arrive.
+- The original standalone script is preserved at `legacy/scraper.py` (manual run; writes `temp.txt`/`temp2.txt`/`final.txt` in the working directory).
+
+## Extending <a name="extending"></a>
+
+Add a new game without touching existing ones:
+
+1. Create `lottopy/games/<your_game>.py` exporting a `GameConfig` and calling `register_game(...)`.
+2. Implement a `parse_row(row)` function that returns `(numbers: List[str], specials: List[str])`.
+3. Import the module in `lottopy/games/__init__.py` to auto-register.
+
+The CLI/GUI will pick up new games via the registry—no other code changes needed.
