@@ -42,19 +42,21 @@ pip install requests beautifulsoup4
 
 ## Usage <a name="usage"></a>
 
-Run the end-to-end scrape, count, and suggestion flow:
+Run the GUI (includes scrape, count, and suggestion flow):
 
 ```bash
-python -m lottopy --game mega_millions
-# or
-python -m lottopy --game texas_two_step
+python main.py  # launches Tkinter GUI
+```
+
+Direct module launch (equivalent):
+
+```bash
+python -m lottopy.gui
 ```
 
 Options:
 
-- `--output-dir`: destination for outputs (default `data`)
-- `--threshold-divisor`: divisor for frequency threshold (default `31`)
-- `--suggestion-sets`: number of suggestion rows to emit (default `5`)
+- Adjust options inside the GUI: game, output dir, threshold divisor, suggestion sets, and load results.
 
 ## GUI <a name="gui"></a>
 
