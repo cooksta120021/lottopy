@@ -5,6 +5,7 @@ Run with:
 Listens on ws://localhost:8787
 """
 
+import os
 import asyncio
 import websockets
 
@@ -46,8 +47,13 @@ async def handler(ws):
 
 
 async def main():
-    async with websockets.serve(handler, "localhost", 8787):
-        print("Relay listening on ws://localhost:8787 (Python)")
+    host = os.environ.get("RELAY_HOST", "0.0.0.0")
+    port = int(os.environ.get("RELAY_PORT", "8787"))
+    advertised = os.environ.get("RELAY_PUBLIC_URL", f"ws://{host}:{port}")
+
+    async with websockets.serve(handler, host, port):
+        print(f"Relay listening on ws://{host}:{port} (Python)")
+        print(f"Set teamCollab.relayUrl to: {advertised}")
         await asyncio.Future()
 
 
