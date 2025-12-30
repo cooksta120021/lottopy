@@ -16,7 +16,7 @@ This folder contains a prototype for a custom over-the-internet collaboration ex
    ```bash
    npm install
    ```
-3) VS Code or Windsurf (extension host is Node-based).
+3) Windsurf (extension host is Node-based; instructions below assume Windsurf).
 
 ## Run it live (step-by-step, no packaging)
 1) Start the relay on a publicly reachable host (envs optional):  
@@ -25,20 +25,21 @@ This folder contains a prototype for a custom over-the-internet collaboration ex
    python relay_py.py
    ```
    - Open port 8787 to the internet (or place behind a TLS reverse proxy).
-   - In VS Code/Windsurf settings, set `teamCollab.relayUrl` to `ws://<public-ip>:8787` (or `wss://...` if proxied).
-2) Open the `extension/` folder in VS Code/Windsurf.
-3) Launch the Extension Development Host:
-   - If F5 works: press F5 (or “Run Extension”).
-   - If F5 is unavailable, from the `extension/` folder run:
-     ```bash
-     npm run dev:windsurf   # for Windsurf
-     # or
-     npm run dev:code       # for VS Code
-     ```
-4) In the Dev Host, Host A runs “Team Collaboration: Start Session” → copy invite.
-5) Guest B runs “Team Collaboration: Join Session” → paste invite.
-6) Both edit files; content syncs and the status bar shows which files others are on.
-7) End with “Team Collaboration: End Session” (or close relay/instances).
+   - The relay will prompt HOST/GUEST and print the relay URL to set (`teamCollab.relayUrl`) plus your next steps (start/join session). If no .env is present, it creates share.env with defaults.
+2) Open the `extension/` folder in Windsurf.
+3) (Optional helper) From `extension/`, run:
+   ```bash
+   python run_collab.py
+   ```
+   This will pip+npm install deps (if possible) and launch the interactive relay.
+4) Launch the Extension Development Host (Windsurf) without F5:
+   ```bash
+   npm run dev:windsurf
+   ```
+5) In the Dev Host, Host A runs “Team Collaboration: Start Session” → copy invite.
+6) Guest B runs “Team Collaboration: Join Session” → paste invite.
+7) Both edit files; content syncs and the status bar shows which files others are on.
+8) End with “Team Collaboration: End Session” (or close relay/instances).
 
 ## Notes / Next steps
 - Current sync sends whole-document snapshots; improve to incremental ops + conflict handling.
