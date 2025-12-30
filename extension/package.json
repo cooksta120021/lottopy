@@ -1,0 +1,34 @@
+{
+  "name": "team-collab",
+  "displayName": "Team Collaboration (Custom Live Share)",
+  "description": "Prototype extension scaffold for custom over-the-internet collaboration (start/join/end session).",
+  "version": "0.0.1",
+  "publisher": "cooksta120021",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "teamCollab.startSession",
+        "title": "Team Collaboration: Start Session"
+      },
+      {
+        "command": "teamCollab.joinSession",
+        "title": "Team Collaboration: Join Session"
+      },
+      {
+        "command": "teamCollab.endSession",
+        "title": "Team Collaboration: End Session"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0"
+  },
+  "dependencies": {
+    "ws": "^8.17.1"
+  }
+}
